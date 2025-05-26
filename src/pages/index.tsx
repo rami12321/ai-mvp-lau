@@ -1,36 +1,52 @@
-import { useState } from "react";
-import axios from "axios";
+"use client";
+import { useState, ReactNode } from "react";
+import { IdeaForm } from "@/components/IdeaForm";
+import { ResultDisplay } from "@/components/ResultDisplay";
+import { AIResult } from "@/types";
+
+const Layout = ({ children }: { children: ReactNode }) => (
+  <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-extrabold text-gray-900">Startup Idea Validator</h1>
+        <p className="mt-2 text-lg text-gray-600">Get mentor-style AI feedback on your idea</p>
+      </div>
+      {children}
+    </div>
+  </div>
+);
 
 export default function Home() {
-  const [prompt, setPrompt] = useState("Tell me a joke");
-  const [response, setResponse] = useState("");
+  const [idea, setIdea] = useState("");
+  const [result, setResult] = useState<AIResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const askAI = async () => {
-    const { data } = await axios.post("/api/hello", { prompt });
-    setResponse(data.text);
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const res = await fetch("/api/askai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unknown error");
+      setResult(data as AIResult);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl mb-4">AI MVP Starter</h1>
-
-      <textarea
-        className="w-full border p-2 mb-4"
-        rows={4}
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-      />
-
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded"
-        onClick={askAI}
-      >
-        Ask AI
-      </button>
-
-      {response && (
-        <pre className="mt-6 bg-gray-100 p-4 rounded whitespace-pre-wrap">{response}</pre>
-      )}
-    </main>
-  );
-}
+    <Layout>
+      {error && <p className="text-red-600 mb-4">Error: {error}</p>}
+      <IdeaForm idea={idea} setIdea={setIdea} onSubmit={handleSubmit} loading={loading} />
+      {result && <ResultDisplay result={result} />}
+    </Layout>
+  );}
