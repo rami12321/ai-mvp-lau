@@ -1,4 +1,4 @@
-# 🚀 Startup Idea Validator
+# Startup Idea Validator
 
 A minimalist full-stack web app that lets users get mentor-style AI feedback on their startup ideas. Built with Next.js, TypeScript, Tailwind CSS, and OpenAI’s GPT API, it demonstrates a complete end-to-end flow:
 
@@ -9,7 +9,7 @@ A minimalist full-stack web app that lets users get mentor-style AI feedback on 
 
 ---
 
-## 🌟 Features
+## Features
 
 - **Prompt engineering**: instructs the AI to behave like a startup mentor  
 - **Strict JSON parsing**: removes code fences and ensures valid output  
@@ -17,7 +17,7 @@ A minimalist full-stack web app that lets users get mentor-style AI feedback on 
 - **Modular code**: clear separation of concerns (lib, types, components, pages)  
 
 ---
-🗂️ Project Structure
+ Project Structure
 lib/aiClient.ts
 Handles AI integration: constructs the prompt, calls OpenAI, strips markdown fences, and parses JSON.
 
@@ -51,7 +51,7 @@ The main client page, which uses React hooks for state, ties together IdeaForm a
 
 ---
 
-🧪 Testing the Flow 
+Testing the Flow 
 Start your dev server: npm run dev (if locally)
 
 Enter a sample idea, like:
