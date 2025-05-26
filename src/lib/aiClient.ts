@@ -28,7 +28,6 @@ export async function validateIdea(idea: string): Promise<AIResult> {
     temperature: 0.7,
   });
 
-  // Sanitize response: strip markdown code fences if present
   const raw = completion.choices[0].message.content!;
   const cleaned = raw
     .trim()
