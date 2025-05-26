@@ -17,8 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const result = await validateIdea(idea.trim());
     console.log("AI result:", result);
     return res.status(200).json(result);
-  } catch (error: any) {
-    console.error("Error in /api/askai:", error);
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Error in /api/askai:", message);
+    return res.status(500).json({ error: message });
   }
 }

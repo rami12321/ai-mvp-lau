@@ -17,12 +17,12 @@ const Layout = ({ children }: { children: ReactNode }) => (
 );
 
 export default function Home() {
-  const [idea, setIdea] = useState("");
+  const [idea, setIdea] = useState<string>("");
   const [result, setResult] = useState<AIResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     setLoading(true);
     setError(null);
     setResult(null);
@@ -34,10 +34,13 @@ export default function Home() {
         body: JSON.stringify({ idea }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Unknown error");
+      if (!res.ok) {
+        throw new Error(data.error || "Unknown error");
+      }
       setResult(data as AIResult);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -49,4 +52,5 @@ export default function Home() {
       <IdeaForm idea={idea} setIdea={setIdea} onSubmit={handleSubmit} loading={loading} />
       {result && <ResultDisplay result={result} />}
     </Layout>
-  );}
+  );
+}

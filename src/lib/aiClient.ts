@@ -28,6 +28,7 @@ export async function validateIdea(idea: string): Promise<AIResult> {
     temperature: 0.7,
   });
 
+  // Sanitize response: strip markdown code fences if present
   const raw = completion.choices[0].message.content!;
   const cleaned = raw
     .trim()
@@ -36,7 +37,7 @@ export async function validateIdea(idea: string): Promise<AIResult> {
 
   try {
     return JSON.parse(cleaned) as AIResult;
-  } catch (err) {
+  } catch {
     throw new Error(`Invalid AI response: ${cleaned}`);
   }
 }
